@@ -16,4 +16,5 @@ You need an virtual environnement of python in 3.11, activate it (venv\Scripts\a
 And in it, you need to install tensorflow 2.15 
 I used vscode, so I needed to install every libraries with pip install.
 
-In the source code, you need to change the path of the image to predict according to wich image your want to try.
+In the source code, you need to change the path of the local dataset.
+Also change the path of the image to predict according to wich image your want to try, in the floder img_a_tester.
