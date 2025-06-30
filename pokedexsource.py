@@ -12,24 +12,8 @@ from tensorflow.keras.models import Model
 from tensorflow.keras import layers
 from tensorflow.keras.callbacks import EarlyStopping
 
-
-"""url_pikachu = "https://assets.pokemon.com/assets/cms2/img/pokedex/full/025.png"
-resp = requests.get(url_pikachu, stream=True).raw
-image_array_pikachu = np.asarray(bytearray(resp.read()), dtype="uint8")
-print(f'Shape of the image: {image_array_pikachu.shape}')
-image_pikachu = cv2.imdecode(image_array_pikachu, cv2.IMREAD_COLOR)
-
-# BGR → RGB, redimensionnement, normalisation
-image_pikachu_rgb = cv2.cvtColor(image_pikachu, cv2.COLOR_BGR2RGB)
-image_pikachu_resized = cv2.resize(image_pikachu_rgb, (200, 200))
-image_pikachu_preprocessed = image_pikachu_resized.astype("float32") / 255.0
-
-plt.axis('off')
-plt.imshow(image_pikachu_rgb)
-plt.show()"""
-
-# charger le dataset local
-data_dir = pathlib.Path(r"C:\Users\user\Desktop\Projets\Pokedex\dataset")
+# LOAD THE LOCAL DATASET
+data_dir = pathlib.Path(r"C:\Users\user\Desktop\Folder\Pokedex\dataset")
 print(f"Dataset path: {data_dir.resolve()}")
 
 batch_size = 8
@@ -55,7 +39,7 @@ val_data = tf.keras.preprocessing.image_dataset_from_directory(
 class_names = train_data.class_names  
 print("Classes détectées :", class_names)
 
-# afficher des images
+# DISPLAY IMAGES
 plt.figure(figsize=(10, 10))
 for images, labels in train_data.take(1):
     for i in range(3):
@@ -64,7 +48,7 @@ for images, labels in train_data.take(1):
         plt.title(class_names[labels[i]])
         plt.axis("off")
 
-# construction du modele
+# MODEL CONSTRUCTION
 num_classes = len(class_names)
 model = tf.keras.Sequential([
     layers.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
@@ -84,14 +68,14 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False),
               metrics=['accuracy'])
 
-# test early stop
+# EARLY STOP
 early_stopping = EarlyStopping(
-    monitor='val_loss',        # On surveille la performance sur la validation
-    patience=4,                # On tolère 4 époques sans amélioration
-    restore_best_weights=True # Revenir aux meilleurs poids
+    monitor='val_loss',        # PERFORMANCE IS MONITORED ON VALIDATION
+    patience=4,                # TOLERATE 4 EPOCHS WITHOUT IMPROVEMENT
+    restore_best_weights=True 
 )
 
-# entraînement
+# TRAINING
 logdir = "logs"
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir, histogram_freq=1)
 model.fit(
@@ -101,9 +85,9 @@ model.fit(
     callbacks=[tensorboard_callback, early_stopping]
 )
 
-# prédiction
+# PREDICTING
 from tensorflow.keras.utils import load_img, img_to_array
-image_path = r"C:\Users\user\Desktop\Projets\Pokedex\img_a_tester\test.jpg" #image à prédire
+image_path = r"C:\Users\user\Desktop\Projets\Pokedex\img_a_tester\test.jpg" #IMAGE TO PREDICT
 if not os.path.exists(image_path):
     print(f"Image non trouvée : {image_path}")
     sys.exit(1)
@@ -122,13 +106,13 @@ res = np.argmax(predictions, axis=1)[0]
 print(f"Classe prédite: {class_names[res]} ({res})")
 print("Probabilités :", predictions)
 
-# visualisation des filtres
+# FILTER VISUALIZATION
 def visualiser_filtres(name_image, model, layer_name, image):
     inp = model.inputs
     out1 = model.get_layer(layer_name).output
     feature_map_1 = Model(inputs=inp, outputs=out1)
 
-    # redimensionner et normaliser l'image
+    # RESIZE AND NORMALISE THE IMAGE
     img_resized = cv2.resize(image, (img_width, img_height))
     img_normalized = img_resized.astype("float32") / 255.0
     input_img = np.expand_dims(img_normalized, axis=0)
@@ -146,8 +130,5 @@ def visualiser_filtres(name_image, model, layer_name, image):
         ax.axis('off')
         ax.imshow(f[0, :, :, i], cmap='viridis')
         plt.imsave(f'{output_dir}/{name_image}_{layer_name}_{i}.jpg', f[0, :, :, i])
-
-
-# visualiser_filtres("Pikachu", model, "conv2d", image_pikachu_rgb)
 
 print(f"Classe prédite: {class_names[res]}")
