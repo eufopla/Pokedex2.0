@@ -1,0 +1,26 @@
+Création d'un environnement virtuel avec Python 3.11 :
+py -3.11 -m venv venv
+
+Activer l'environnement virtuel :
+venv\Scripts\activate.bat
+
+Installer TensorFlow 2.15 dedans :
+pip install tensorflow
+
+Dans VSCode :
+Ouvrir le chemin de l'interpréteur python de l'environnement : .\venv\Scripts\python.exe
+C:\Users\user\Desktop\Projets\Pokedex\venv\Scripts\python.exe en l'occurence
+
+SI CV2 est pas installé :
+pip install opencv-python
+
+Dans la partie "prédiction d'une image", il faut mettre le chemin de l'image à tester.
+
+Avec 4 images dans chaque dataset, la seule prédiction qui fonctionne est celle de lucario (avec une image du dataset).
+
+Maintenant j'ai 10 images dans chaque dataset, Pikachu a été prédis en elektek, lucario en lucario, cosmog en cosmog, elektek en lucario.
+
+50 images par dt : cosmog ok (1 fois sur 5), lucario ok (1 fois sur 2), Pikachu
+
+PROBLEME : surapprentissage (overfitting) le modèle apprend trop bien les détails et le bruit du jeu de données d'entraînement, il perd sa capacité à généraliser à de nouvelles données qu’il n’a jamais vues.Trop peu de données pour que le modèle généralise bien. Modèle trop complexe par rapport à la taille et la diversité du jeu de données. Trop d’époques d'entraînement → le modèle "mémorise" au lieu d'apprendre. Pas assez de régularisation, d’augmentation de données ou d’arrêt anticipé.
+
